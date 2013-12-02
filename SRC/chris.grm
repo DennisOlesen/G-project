@@ -1,5 +1,6 @@
 %{
 (* HEADER *)
+load "AbSyn";
 open AbSyn;
 %}
 
@@ -7,11 +8,13 @@ open AbSyn;
 %start Prog
 
 %token <Pos> PROGRAM FUNCTION PROCEDURE
-%token <Pos> LPAREN RPAREN
+%token <Pos> LPAREN RPAREN SLPAREN SRPAREN CLPAREN CRPAREN
 %token <Pos> BEGIN END
 %token <Pos> SEMICOLON COLON COMMA DOT
 %token <Pos> ID VAR
 %token <Pos> INT CHAR BOOL ARRAY OF
+%token <Pos> NUMLIT LOGICLIT CHARLIT STRINGLIT
+%token <Pos> PLUS MINUS TIMES SLASH EQUALS LT GT AND OR NOT
 %token <Pos> IF ELSE THEN
 %token <Pos> WHILE DO
 %token <Pos> RETURN
@@ -21,33 +24,37 @@ open AbSyn;
 /* add type declarations */
 
 /* funtion declarations */
-%type <FunDec list> Prog
+%type <Prog> Prog
 %type <FunDec list> FunDecs
 %type <FunDec> FunDec
 
 /* declarations */
-%type PDecl
-%type Params
+%type <Dec list> PDecl
+%type <Dec list> Params
 %type <Dec> Dec
 %type <Dec list> Decs
 
 /* function, procedure parameters and index list */
-%type CallParams
+%type <Exp list> CallParams
 %type <Exp list> Exps
 
 /* types */
 %type <Type> Type
 
 /* blocks */
-%type Block DBlock SBlock
+%type <StmtBlock> Block
+%type <Dec list> DBlock
+%type <Stmt list> SBlock
 
 /* statements */
-%type StmtSeq Stmt
+%type <Stmt list> StmtSeq
+%type <Stmt> Stmt
 
 /* L-values and expressions */
 %type <LVAL> LVal
 %type <Exp> Exp
 %type <Exp> Op
+%type <Exp> Ret
 
 /* associativty and precedence */
 
@@ -58,7 +65,7 @@ Prog:
     PROGRAM ID SEMICOLON FunDecs EOF    { $4 }
 
 FunDecs:
-    FunDecs FunDec SEMICOLON        { [$2] @ [$1] }
+    FunDecs FunDec                  { [$2] @ [$1] }
   | FunDec                          { $1 }
 
 FunDec:
@@ -71,12 +78,16 @@ PDecl:
 
 Params:
     Params SEMICOLON Dec            {}
-    Dec                             {}
+  | Dec                             {}
 
 Dec:
     ID COLON Type                   { Dec($1, $3, $1) }
 
-%Type:
+Decs:
+    Decs Dec SEMICOLON              {}
+  | Dec SEMICOLON                   {}
+
+Type:
     INT                             { Int($1) }
   | CHAR                            { Char($1) }
   | BOOL                            { Bool($1) }
@@ -99,11 +110,51 @@ StmtSeq:
 
 Stmt:
     ID LPAREN CallParams RPAREN     { ProcCall($1, $3, $1) }
-  | IF Exp THEN Block               { IfThEl($2, $4, $4, $1) }
-  | IF Exp THEN Block ELSE Block    { IfThEl($2, $4, $4, $1) }
+  | IF Exp THEN Block               { IfTh($2, $4, $1) }
+  | IF Exp THEN Block ELSE Block    { IfThEl($2, $4, $6, $1) }
   | WHILE Exp DO Block              { While($2, $4, $1) }
   | RETURN Ret                      { Return($2, $1) }
   | LVal ASSIGN Exp                 { Assign($1, $3, $2) }
+
+LVal:
+    ID                              {}
+  | ID SLPAREN Exps SRPAREN         {}
+
+Ret:
+    Exp                             {}
+  | EPSILON                         {}
+
+Exp:
+    NUMLIT                          {}
+  | LOGICLIT                        {}
+  | CHARLIT                         {}
+  | STRINGLIT                       {}
+  | CLPAREN Exps CRPAREN            {}
+  | LVal                            {}
+  | NOT Exp                         {}
+  | Exp Op Exp                      {}
+  | LPAREN Exp RPAREN               {}
+  | ID LPAREN CallParams RPAREN     {}
+
+Op:
+    PLUS                            {}
+  | MINUS                           {}
+  | TIMES                           {}
+  | SLASH                           {}
+  | EQUALS                          {}
+  | LT                              {}
+  | GT                              {}
+  | AND                             {}
+  | OR                              {}
+
+CallParams:
+    Exps                            {}
+  | EPSILON                         {}
+
+Exps:
+    Exp COMMA Exps                  {}
+  | Exp                             {}
+
 
 %%
 (* TRAILER (sml code) *)
