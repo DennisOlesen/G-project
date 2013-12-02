@@ -11,7 +11,8 @@ open AbSyn;
 %token <Pos> LPAREN RPAREN SLPAREN SRPAREN CLPAREN CRPAREN
 %token <Pos> BEGIN END
 %token <Pos> SEMICOLON COLON COMMA DOT
-%token <Pos> ID VAR
+%token <Pos, Ident> ID
+%token <Pos> VAR
 %token <Pos> INT CHAR BOOL ARRAY OF
 %token <Pos> NUMLIT LOGICLIT CHARLIT STRINGLIT
 %token <Pos> PLUS MINUS TIMES SLASH EQUALS LT GT AND OR NOT
@@ -58,6 +59,9 @@ open AbSyn;
 
 /* associativty and precedence */
 
+%left PLUS MINUS
+%left TIMES SLASH
+
 %%
 
 /* RULES */
@@ -65,27 +69,27 @@ Prog:
     PROGRAM ID SEMICOLON FunDecs EOF    { $4 }
 
 FunDecs:
-    FunDecs FunDec                  { [$2] @ [$1] }
-  | FunDec                          { $1 }
+    FunDecs FunDec                  { $2 @ [$1] }
+  | FunDec                          { [$1] }
 
 FunDec:
-    FUNCTION ID LPAREN PDecl RPARENT COLON Type Block SEMICOLON { Func($7, $2, $4, $8, $1) }
-  | PROCEDURE ID LPAREN PDecl RPAREN Block SEMICOLON            { Proc($2, $4, $6, $1) }
+    FUNCTION ID LPAREN PDecl RPAREN COLON Type Block SEMICOLON  { Func($7, #2 $2, $4, $8, #1 $1) }
+  | PROCEDURE ID LPAREN PDecl RPAREN Block SEMICOLON            { Proc(#2 $2, $4, $6, #1 $1) }
 
 PDecl:
-    Params                          {}
-  | EPSILON                         {}
+    Params                          { $1 }
+  | EPSILON                         { [] }
 
 Params:
-    Params SEMICOLON Dec            {}
-  | Dec                             {}
+    Params SEMICOLON Dec            { $1 @ [$3] }
+  | Dec                             { [$1] }
 
 Dec:
-    ID COLON Type                   { Dec($1, $3, $1) }
+    ID COLON Type                   { Dec(#2 $1, $3, #1 $1) }
 
 Decs:
-    Decs Dec SEMICOLON              {}
-  | Dec SEMICOLON                   {}
+    Decs Dec SEMICOLON              { $1 @ [$2] }
+  | Dec SEMICOLON                   { [$1] }
 
 Type:
     INT                             { Int($1) }
@@ -94,27 +98,27 @@ Type:
   | ARRAY OF Type                   { Array($3, $1) }
 
 Block:
-    DBlock SBlock                   {}
+    DBlock SBlock                   { ($1, $2) }
 
 DBlock:
-    VAR Decs                        { [$2] }
-  | EPSILON                         {}
+    VAR Decs                        { $2 }
+  | EPSILON                         { [] }
 
 SBlock:
-    BEGIN StmtSeq SEMICOLON END     {}
-  | Stmt                            {}
+    BEGIN StmtSeq SEMICOLON END     { $2 }
+  | Stmt                            { [$1] }
 
 StmtSeq:
-    StmtSeq SEMICOLON Stmt          {}
-  | Stmt                            {}
+    StmtSeq SEMICOLON Stmt          { $1 @ [$3]}
+  | Stmt                            { [$1] }
 
 Stmt:
-    ID LPAREN CallParams RPAREN     { ProcCall($1, $3, $1) }
-  | IF Exp THEN Block               { IfTh($2, $4, $1) }
-  | IF Exp THEN Block ELSE Block    { IfThEl($2, $4, $6, $1) }
-  | WHILE Exp DO Block              { While($2, $4, $1) }
-  | RETURN Ret                      { Return($2, $1) }
-  | LVal ASSIGN Exp                 { Assign($1, $3, $2) }
+    ID LPAREN CallParams RPAREN     { ProcCall(#2 $1, $3, #1 $1) }
+  | IF Exp THEN Block               { IfThEl($2, $4, [], #1 $1) }
+  | IF Exp THEN Block ELSE Block    { IfThEl($2, $4, $6, #1 $1) }
+  | WHILE Exp DO Block              { While($2, $4, #1 $1) }
+  | RETURN Ret                      { Return($2, #1 $1) }
+  | LVal ASSIGN Exp                 { Assign($1, $3, #1 $2) }
 
 LVal:
     ID                              {}
