@@ -70,7 +70,7 @@ Prog:
 
 FunDecs:
     FunDecs FunDec                  { $2 @ [$1] }
-  | FunDec                          { [$1] }
+  | FunDec                          { [$1]      }
 
 FunDec:
     FUNCTION ID LPAREN PDecl RPAREN COLON Type Block SEMICOLON  { Func($7, #2 $2, $4, $8, #1 $1) }
@@ -121,24 +121,24 @@ Stmt:
   | LVal ASSIGN Exp                 { Assign($1, $3, #1 $2) }
 
 LVal:
-    ID                              {}
-  | ID SLPAREN Exps SRPAREN         {}
+    ID                              { $1     }
+  | ID SLPAREN Exps SRPAREN   /*VAR?*/{ Var($1, $3) }
 
 Ret:
-    Exp                             {}
-  | EPSILON                         {}
+    Exp                             { $1    }
+  | EPSILON                         {       }
 
 Exp:
-    NUMLIT                          {}
-  | LOGICLIT                        {}
-  | CHARLIT                         {}
-  | STRINGLIT                       {}
-  | CLPAREN Exps CRPAREN            {}
-  | LVal                            {}
-  | NOT Exp                         {}
-  | Exp Op Exp                      {}
-  | LPAREN Exp RPAREN               {}
-  | ID LPAREN CallParams RPAREN     {}
+    NUMLIT                          {$1}
+  | LOGICLIT                        {$1}
+  | CHARLIT                         {$1}
+  | STRINGLIT                       {$1}
+  | CLPAREN Exps CRPAREN            {$1}
+  | LVal                            {$1}
+  | NOT Exp                         {$1}
+  | Exp Op Exp                      {$1}
+  | LPAREN Exp RPAREN               {$1}
+  | ID LPAREN CallParams RPAREN     {/*Whatdo*/}
 
 Op:
     PLUS                            {}
@@ -152,12 +152,12 @@ Op:
   | OR                              {}
 
 CallParams:
-    Exps                            {}
-  | EPSILON                         {}
+    Exps                            { $1 }
+  | EPSILON                         { [] }
 
 Exps:
-    Exp COMMA Exps                  {}
-  | Exp                             {}
+    Exp COMMA Exps                  { [$1] @ $3 }
+  | Exp                             { [$1]      }
 
 
 %%

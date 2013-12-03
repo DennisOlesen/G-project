@@ -1,0 +1,55 @@
+%{
+(* HEADER *)
+load AbSyn;
+Open AbSyn;
+%}
+
+/* DECLARATIONS */
+
+%token <int*int> TProgram
+%token <int*int> TFunction
+%token <int*int> TProcedure
+%token <int*int> TVar
+%token <int*int> TBegin
+%token <int*int> TEnd
+%token <int*int> TIf
+%token <int*int> TThen   
+%token <int*int> TElse
+%token <int*int> TWhile
+%token <int*int> TDo
+%token <int*int> TReturn
+%token <int*int> TArray
+%token <int*int> TOf
+%token <int*int> TInt
+%token <int*int> TBool
+%token <int*int> TChar
+%token <int*int> TAnd
+%token <int*int> TNot
+%token <int*int> TOr
+%token <(bool,(int*int))> TBlit
+%token <(int,(int*int))> TId
+%token <int*int> TSemi
+%token <int*int> TParOpen
+%token <int*int> TParClose
+%token <Type> TType
+%token <int*int> TColon
+/* start symbol */
+%start Prog
+/* Type = non terminal, token = terminaler */
+/* types returned by rules below */
+%type <FunDec list> FunDecs
+%type <Prog> Prog
+%type <FunDec> FunDec
+%type <PDecl>  PDecl
+%type <Block> Block
+
+%%
+
+
+Prog        : TProgram TId TSemi FunDecs {$4}
+FunDecs     : FunDecs FunDec { $1 @ [$2] }
+FunDecs     : FunDec         {$1}
+FunDec      : TFunction TId TParOpen PDecl TParClose TColon TType Block  {Func($7,$2,$4,$8,$1)}
+FunDec      : TProcedure TId TParOPen PDecl TParClose Block TSemi {Proc($2,$4,$6,$1)}
+
+
