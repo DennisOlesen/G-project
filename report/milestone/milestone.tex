@@ -12,6 +12,7 @@
 
 \begin{document}
 \section*{Parser implementering}
+\label{sec:implementation}
 Tokens:\\
 Tokens er tilsvarende terminaler i mosmlyac, og for at kende bedre forskel på vores terminaler og non-terminaler indførte vi en konvention om at alle tokens blev skrevet i caps.\\
 Derudover skrev vi token typer som ML standard typer og ikke som beskrevet i AbSyn, da AbSyn åbnes i headeren, som først starter efter token definitionerne.\\
@@ -36,7 +37,18 @@ For at integrere den i compileren ændrede vi alle tilfælde af LL1Parser.Ttoken
 
 
 \section*{Test}
-
+Da vi endnu ikke har implementeret type tjek, herunder de boolske operatorer
+or og not, så er det begrænset, hvor mange af de leverede filer i DATA mappen,
+vi kan bruge til at teste. Derfor har vi valgt selv at skrive nogle testtilfælde,
+hvor vi tester for: addition/subtraktion, boolsk and operator, funktioner,
+parameter lister og blok struktur. De filer vi har lavet er: arithmetic.pal,
+boolean.pal, declarations.pal, functions.pal. Når vi tester for blok struktur,
+skal det forstås sådan, at vi, som beskrevet i (\ref{sec:implementation}), oplevede
+udfordringer i forhold DBlocks og SBlocks. Vi ønskede derfor at være sikre på, at 
+løsningen virkede optimalt. Alle vores egne filer blev oversat uden fejl, mens
+det kun er følgende af de leverede filer, der blev oversat: fibRec.pal,
+fibWhile.pal, proctest.pal, readtest.pal og shortest.pal. De filer, der ikke
+blev oversat, skyldes, at vi endnu ikke har løst opgave 2, 3 og 4.
 \section*{Ideer}
 
 \end{document}
