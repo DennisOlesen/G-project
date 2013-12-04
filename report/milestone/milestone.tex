@@ -79,23 +79,27 @@ løsningen virkede optimalt. Alle vores egne filer blev oversat uden fejl, mens
 det kun er følgende af de leverede filer, der blev oversat uden fejlmeddeleser:
 fibRec.pal, fibWhile.pal, proctest.pal, readtest.pal og shortest.pal. De filer,
 der ikke blev oversat, skyldes, at vi endnu ikke har løst opgave 2, 3 og 4.
-\section*{Ideer og Status}
-
-\subsection{1}
+\section*{Ideer og status}
+\subsection*{1. Parser}
 Denne er færdig og står beskrevet i detaljer i afsnittet "Parser implementering"
-
-\subsection{2}
-Gange, divider, or og not er alle sammen indsat i parser og lexer. Dette er de 4 operationer som er i fokus i de resterende delopgaver, og de forventes først at kunne compiles når alle opgaverne er færdige.
-Dette betyder at vi imiderletid fortsætter til delopgave 3.
-
-\subsection{3}
-Den er ikke påbegyndt men det ligger i forlængelse af ugens pensum, og vi kan se af type.sml at typecheckeren ikke er lavet så dette skal laves i stil med de andre operationer som i forvejen er i filen.
-=======
-\section*{Ideer}
-
-\subsection{4}
-nope
-\subsection{5}
-not even a little bit.
+\subsection*{2. Operatorer}
+Gange, divider, or og not er alle sammen indsat i Parser.grm og Lexer.lex.
+Dette er de 4 operationer, som er i fokus i de resterende delopgaver,
+og vi forventer de først at kan testes, når alle opgaverne er færdige.
+Vi forventer deraf også, at skulle arbejde på denne delopgave sideløbende
+med de andre delopgaver.
+\subsection*{3. Type inference}
+Den er ikke påbegyndt, men det ligger i forlængelse af ugens pensum, og vi kan se af type.sml,
+at typecheckeren ikke er lavet, så dette skal laves i stil med de andre operationer,
+som i forvejen findes i filen. Vi regner med at lave type inference ud fra
+lignende teknikker, som der blev præsenteret til forelæsningen onsdag d. 4/12.
+Dvs., at hvis vi fx har udtrykket ``a = read() + read()'', så skal ``a'' have typen
+int.
+\subsection*{4. Array indeksering}
+Denne delopgave er endnu ikke påbegyndt, men vi forventer
+at kunne løse type check delen baseret på erfaringer og
+teknikker fra delopgave 2 og 3.
+\subsection*{5. Call-by-value}
+Denne opgave er endnu ikke påbegyndt.
 \end{document}
 
