@@ -12,6 +12,11 @@
 
 \begin{document}
 \section*{Parser implementering}
+Som det første skrev vi tokens ind fra Lexeren, men med konvention om at alle tokens er skrevet i caps, så vi bedre kunne kende forskel på terminaler og non-terminaler. Tokensne skrev vi som omskrevede typer fra lexeren. Dette betyder altså at vi skrev f.eks. Int*Int istedet for Pos. Dette gjorde vi da headeren først bruges efter tokens er defineret i den genererede parser fil.
+Da tokens var defineret gik vi videre til regler, samt type defineringer, \%type kan forstås som værende non-terminaler, og disse definerede vi efterhånden som vi skulle bruge dem i reglerne. Alle reglerne var beskrevet i GroupProject.pdf filen som er uploadet i forbindelse med opgaven. Disse fulgte vi langt hen ad vejen, dog lavede vi en ændring i forbindelse med Op : Exp Op Exp, denne implementerede vi i Exp, som værende Exp PLUS Exp, Exp MINUS Exp og således for resten af de aritmetiske operatore. Undervejs i reglerne skrev vi enkelte actions ind også, som vi fandt frem til via filen AbSyn.sml. Da alle regler var skrevet ind skrev vi actions færdige. Herefter prøvede vi at generere parseren ved mosmlyac -v parser.grm, og fik en række shift-reduce conflicts, som vi i parser.output filen, genereret ved -v flaget, kunne se hvor konflikterne opstod. Disse ordnede vi ved brug af associativitet. Til sidst debuggede vi ved at generere sml filne, og prøve at åbne denne, dette viste os enkelte fejl vi havde overset, og dem arbejdede vi os igennem.
+
+
+
 
 \section*{Test}
 
