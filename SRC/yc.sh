@@ -1,8 +1,12 @@
 #! /bin/sh
-mosmlyac -v Parser.grm \
-&& ./compile.sh \
-&& cd ../BIN \
-&& ./Paladim ../DATA/testLit.pal \
-&& ./Paladim ../DATA/regs.pal \
-&& ./Paladim ../DATA/testCharBool.pal \
-&& cd ../SRC \
+echo "===! Mosmlyacc !==="
+mosmlyac -v Parser.grm
+echo "===! Compile.sh !==="
+./compile.sh 
+echo "===! Paladim test files !==="
+  for file in ../DATA/*.pal
+    do
+    echo "== $file =="
+  ../BIN/./Paladim $file >> paladim_results.out
+  done
+echo "===! End !==="

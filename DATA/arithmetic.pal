@@ -1,0 +1,14 @@
+program arithmetic;
+procedure main()
+    var i : int;
+        j : int;
+        k : int;
+begin
+    i := 1;
+    j := 2;
+    k := 3;
+
+    i := i + j;
+    j := k - 1;
+    k := k + 2;
+end;

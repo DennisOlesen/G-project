@@ -1,0 +1,22 @@
+program functions;
+function add(a : int; b : int) : int
+begin
+    return a + b;
+end;
+
+function subtract(a : int; b : int) : int
+begin
+    return a - b;
+end;
+
+procedure main()
+    var a : int;
+        b : int;
+        c : int;
+begin
+    a := 10;
+    b := 3;
+
+    c := add(a, b);
+    c := subtract(a, b);
+end;
