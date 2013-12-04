@@ -13,28 +13,59 @@
 \begin{document}
 \section*{Parser implementering}
 \label{sec:implementation}
-Tokens:\\
-Tokens er tilsvarende terminaler i mosmlyac, og for at kende bedre forskel på vores terminaler og non-terminaler indførte vi en konvention om at alle tokens blev skrevet i caps.\\
-Derudover skrev vi token typer som ML standard typer og ikke som beskrevet i AbSyn, da AbSyn åbnes i headeren, som først starter efter token definitionerne.\\
-Tokens er lavet så de svarer til de tokens lexeren kan danne. Dette betød samtidig at vi valgte at omskrive lexerens tokens fra Ttoken til TOKEN.\\
-\\
-Typer:\\
-Typer forstås som non-terminaler, og de har fået typer tilsvarende deres beskrivelse i AbSyn, og dem der ikke kunne findes der, havde noget i deres regler, som vi derfra kunne komme frem til hvad typen skal være.
-\\
-Associativitet:\\
-I mosmlyac har associativiteterne større associativitet jo længere nede i filen de står. Dette udnyttede vi til at give, f.eks. gange og divider, en højere associativitet end f.eks. plus og minus. Derudover tilføjede vi også associtiativitet til de terminaler der ellers skulle bruge det. Herunder If then og else som skulle gøres højre assoc.\\
-Regler:\\
-I reglerne måtte vi lave enkelte omskrivninger fra den struktur som er givet i opgave beskrivelsen. Herunder er bl.a. \\
-Op: Exp Op Exp\\
-Som rykkede over i Exp, og lavede:\\
-Exp: Exp PLUS Exp\\
-   | Exp MINUS Exp\\
-... og ligeledes for de resterende operatore.
-Integrering:\\
-For at integrere den i compileren ændrede vi alle tilfælde af LL1Parser.Ttoken... til Parser.TOKEN i lexeren.
-
-
-
+\subsection*{Tokens (terminaler)}
+Tokens svarer til terminaler i mosmlyac og for at kende bedre forskel
+på vores terminaler og non-terminaler, indførte vi en konvention om,
+at alle tokens skulle skrives i uppercase. Konventionen betød, at
+actions i Lexer.lex skulle opdateres, så LL1Parser.Token blev til
+Parser.TOKEN. Derudover skrev vi token typer som ML standard
+typer og ikke som beskrevet i AbSyn, da AbSyn åbnes i headeren,
+som først starter efter token definitionerne.
+\subsection*{Typer (non-terminaler)}
+Typer forstås som non-terminaler, og de har fået giver typer, der
+svarer til deres beskrivelse i AbSyn.sml. For nogle af typerne,
+var der ikke direkte defineret en tilsvarende type i AbSyn.sml.
+I sådanne tilfælde udledte vi typen ud fra grammatikken. Fx gav
+vi FunDecs typen FunDec list.
+\subsection*{Associativitet og forrang}
+I mosmlyac har associativiteterne større associativitet jo længere
+nede i filen de står. Dette udnyttede vi til fx at give gange og divider
+en højere associativitet end plus og minus. Det samme gøre sig gælde for
+de boolske operatorer and, or og not. Operatorerne plus, minus, gange,
+dividere, or og and blev desuden gjort venstre associative jævnfør
+almindelige matematiske regler. Not operatoren blev gjort højre
+associativ. De komparative operatorer lig med og mindre end blev gjort
+ikke-associative. Som en konsekvens heraf, tillader vi ikke udtryk på
+formen $x_{1} < \dots < x_{n}$ eller $x_{i} = \dots = x_{n}$, hvor
+$n > 2$. Jævnfør bogen side 51 løste vi ``the dangling else problem''
+ved at gøre terminalerne IF, THEN og ELSE højre associative.
+\subsection*{Regler (produktioner)}
+I reglerne måtte vi lave enkelte omskrivninger fra den struktur,
+som er givet i opgave beskrivelsen. Herunder måtte vi slette Op produktionerne
+og skrev i stedet for højresiderne ind i Exp produktionerne.
+Således  blev eksempelvis
+\begin{align*}
+    Op \rightarrow Exp + Exp
+\end{align*}
+til
+\begin{align*}
+    Exp \rightarrow Exp + Exp
+\end{align*}
+Dette gjorde vi for operatorerne: plus, minus, gange, dividere
+and, or, lig med og mindre end. Endeligt lavede vi også om
+i blok strukturen. I den udleverede grammatik findes der produktioner
+for de tre nonterminaler: Block, DBlock og SBlock. Problemet med den
+opdeling af blok strukturen er, at nonterminalerne i DBlock ikke kunne
+vide, hvornår SBlock begyndte. Det var derfor ikke muligt at have nogle
+variabel erklaringer i en procedure eller function. Løsning blev at
+fjerne opdelingen i blokke og kun beholde Block, som da blev repræsenteret
+ved følgende grammatik.
+\begin{align*}
+    Block &\rightarrow \text{VAR} \; Decs \; \text{; BEGIN} \; StmtSeq \; \text{; END}\\
+    &\text{|} \; \text{VAR} \; Decs \; \text{;} \; Stmt\\ 
+    &\text{|} \; \text{BEGIN} \; StmtSeq \; \text{; END} \; Stmt\\ 
+    &\text{|} \; Stmt
+\end{align*}
 \section*{Test}
 Da vi endnu ikke har implementeret type tjek, herunder de boolske operatorer
 or og not, så er det begrænset, hvor mange af de leverede filer i DATA mappen,
@@ -42,13 +73,12 @@ vi kan bruge til at teste. Derfor har vi valgt selv at skrive nogle testtilfæld
 hvor vi tester for: addition/subtraktion, boolsk and operator, funktioner,
 parameter lister og blok struktur. De filer vi har lavet er: arithmetic.pal,
 boolean.pal, declarations.pal, functions.pal. Når vi tester for blok struktur,
-skal det forstås sådan, at vi, som beskrevet i (\ref{sec:implementation}), oplevede
+skal det forstås sådan, at vi, som beskrevet i forrige afsnit, oplevede
 udfordringer i forhold DBlocks og SBlocks. Vi ønskede derfor at være sikre på, at 
 løsningen virkede optimalt. Alle vores egne filer blev oversat uden fejl, mens
-det kun er følgende af de leverede filer, der blev oversat: fibRec.pal,
-fibWhile.pal, proctest.pal, readtest.pal og shortest.pal. De filer, der ikke
-blev oversat, skyldes, at vi endnu ikke har løst opgave 2, 3 og 4.
-
+det kun er følgende af de leverede filer, der blev oversat uden fejlmeddeleser:
+fibRec.pal, fibWhile.pal, proctest.pal, readtest.pal og shortest.pal. De filer,
+der ikke blev oversat, skyldes, at vi endnu ikke har løst opgave 2, 3 og 4.
 \section*{Ideer og Status}
 
 \subsection{1}
