@@ -1,0 +1,9 @@
+program declarations;
+procedure main()
+    var foo : int;
+        bar : char;
+        oof : bool;
+begin
+    return;
+end;
+
