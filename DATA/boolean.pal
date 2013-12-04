@@ -1,0 +1,10 @@
+program boolean;
+procedure main()
+    var a : bool;
+        b : bool;
+        c : bool;
+begin
+    a := true;
+    b := false;
+    c := a and b;
+end;
