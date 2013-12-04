@@ -79,16 +79,16 @@ rule Token = parse
 
   | [`0`-`9`]+          { case Int.fromString (getLexeme lexbuf) of
                                NONE   => lexerError lexbuf "Bad integer"
-                             | SOME i => NUMLIT (getPos lexbuf, i) }
+                             | SOME i => Parser.NUMLIT (getPos lexbuf, i) }
 
   | `'` ([` ` `!` `#`-`&` `(`-`[` `]`-`~`] | `\`[` `-`~`]) `'`
-                        { CHARLIT
+                        { Parser.CHARLIT
 			                (getPos lexbuf,
                             (case String.fromCString (getLexeme lexbuf) of
                                 NONE => lexerError lexbuf "Bad char constant"
                               | SOME s => String.sub(s,1))) }
   | `"` ([` ` `!` `#`-`&` `(`-`[` `]`-`~`] | `\`[` `-`~`])* `"`
-                        { STRINGLIT
+                        { Parser.STRINGLIT
                             (getPos lexbuf,
                             (case String.fromCString (getLexeme lexbuf) of
                                 NONE => lexerError lexbuf "Bad string constant"
@@ -108,10 +108,10 @@ rule Token = parse
 
   | `(`                 { Parser.LPAREN   (getPos lexbuf) }
   | `)`                 { Parser.RPAREN   (getPos lexbuf) }
-  | `[`                 { Parser.SLPARENT (getPos lexbuf) }
-  | `]`                 { Parser.SRPARENT (getPos lexbuf) }
-  | `{`                 { Parser.CLPARENT (getPos lexbuf) }
-  | `}`                 { Parser.CRPARENT (getPos lexbuf) }
+  | `[`                 { Parser.SLPAREN  (getPos lexbuf) }
+  | `]`                 { Parser.SRPAREN  (getPos lexbuf) }
+  | `{`                 { Parser.CLPAREN  (getPos lexbuf) }
+  | `}`                 { Parser.CRPAREN  (getPos lexbuf) }
 
   | `,`                 { Parser.COMMA    (getPos lexbuf) }
   | `;`                 { Parser.SEMICOLON(getPos lexbuf) }
