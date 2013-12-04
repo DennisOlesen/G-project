@@ -60,10 +60,9 @@
 %left OR
 %left AND
 
-%left PLUS
-%left MINUS
-%left TIMES
-%left SLASH
+%left PLUS MINUS
+%left TIMES SLASH
+
 %right NOT
 
 %nonassoc EQUALS LT
