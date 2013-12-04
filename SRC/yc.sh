@@ -4,7 +4,7 @@ mosmlyac -v Parser.grm
 echo "===! Compile.sh !==="
 ./compile.sh 
 echo "===! Paladim test files !==="
-  for file in ../DATA/*
+  for file in ../DATA/*.pal
     do
     echo "== $file =="
   ../BIN/./Paladim $file >> paladim_results.out
