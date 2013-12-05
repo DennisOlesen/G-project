@@ -28,13 +28,14 @@ var der ikke direkte defineret en tilsvarende type i AbSyn.sml.
 I sådanne tilfælde udledte vi typen ud fra grammatikken. Fx gav
 vi FunDecs typen FunDec list.
 \subsection*{Associativitet og forrang}
-I mosmlyac har associativiteterne større associativitet jo længere
+I mosmlyac har terminalerne større associativitet jo længere
 nede i filen de står. Dette udnyttede vi til fx at give gange og divider
 en højere associativitet end plus og minus. Det samme gøre sig gælde for
 de boolske operatorer and, or og not. Operatorerne plus, minus, gange,
 dividere, or og and blev desuden gjort venstre associative jævnfør
 almindelige matematiske regler. Not operatoren blev gjort højre
-associativ. De komparative operatorer lig med og mindre end blev gjort
+associativ, da det er en venstrestillet operator med kun et enkelt
+argument. De komparative operatorer lig med og mindre end blev gjort
 ikke-associative. Som en konsekvens heraf, tillader vi ikke udtryk på
 formen $x_{1} < \dots < x_{n}$ eller $x_{i} = \dots = x_{n}$, hvor
 $n > 2$. Jævnfør bogen side 51 løste vi ``the dangling else problem''
@@ -81,11 +82,11 @@ fibRec.pal, fibWhile.pal, proctest.pal, readtest.pal og shortest.pal. De filer,
 der ikke blev oversat, skyldes, at vi endnu ikke har løst opgave 2, 3 og 4.
 \section*{Ideer og status}
 \subsection*{1. Parser}
-Denne er færdig og står beskrevet i detaljer i afsnittet "Parser implementering"
+Denne er færdig og står beskrevet i afsnittet "Parser implementering"
 \subsection*{2. Operatorer}
 Gange, divider, or og not er alle sammen indsat i Parser.grm og Lexer.lex.
 Dette er de 4 operationer, som er i fokus i de resterende delopgaver,
-og vi forventer de først at kan testes, når alle opgaverne er færdige.
+og vi forventer at de først kan testes, når alle opgaverne er færdige.
 Vi forventer deraf også, at skulle arbejde på denne delopgave sideløbende
 med de andre delopgaver.
 \subsection*{3. Type inference}
@@ -94,7 +95,7 @@ at typecheckeren ikke er lavet, så dette skal laves i stil med de andre operati
 som i forvejen findes i filen. Vi regner med at lave type inference ud fra
 lignende teknikker, som der blev præsenteret til forelæsningen onsdag d. 4/12.
 Dvs., at hvis vi fx har udtrykket ``a = read() + read()'', så skal ``a'' have typen
-int.
+int, da plus operatoren har typen $int * int \rightarrow intt$.
 \subsection*{4. Array indeksering}
 Denne delopgave er endnu ikke påbegyndt, men vi forventer
 at kunne løse type check delen baseret på erfaringer og
