@@ -206,7 +206,7 @@ struct
             else
             raise Error ("in type check times exp, one arguments is not of int type "^
                          pp_type tp1^" and "^pp_type tp2^" at ", pos )
-        end;    
+        end
     | typeCheckExp ( vtab, AbSyn.Div   (e1, e2, pos), _ ) =
         let val e1_new = typeCheckExp(vtab, e1, UnknownType )
             val e2_new = typeCheckExp(vtab, e2, UnknownType )
