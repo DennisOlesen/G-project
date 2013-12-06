@@ -8,7 +8,7 @@ echo "===! Paladim test files !==============================================="
   for file in ../DATA/*.pal #læser alle .pal filer i DATA
     do
     echo "== $file ==";
-  ../BIN/./Paladim $file > paladim-files.out
+  ../BIN/./Paladim $file
   done 
 echo "===! End !=============================================================="
 } 2>&1 | tee output-yc.log #Output til log fil 2>&1 for at læse fra terminal
