@@ -202,12 +202,21 @@ struct
         end
 
     (* Task 2: Some code-generation of operators should occur here. *)
-(*
     | compileExp( vtable, Times(e1, e2, pos), place ) =
-        raise Error ( "Task 2 not implemented yet in code generator ", pos )
+        let val t1 = "times1_" ^ newName()
+            val c1 = compileExp(vtable, e1, t1)
+            val t2 = "times2_" ^ newName()
+            val c2 = compileExp(vtable, e2, t2)
+        in c1 @ c2 @ [Mips.MUL (place, t1, t2)]
+        end
+
     | compileExp( vtable, Div(e1, e2, pos), place ) =
-        raise Error ( "Task 2 not implemented yet in code generator ", pos )
-*)
+        let val t1 = "div_" ^ newName()
+            val c1 = compileExp(vtable, e1, t1)
+            val t2 = "div2_" ^ newName()
+            val c2 = compileExp(vtable, e2, t2)
+        in c1 @ c2 @ [Mips.DIV (place, t1, t2)]
+        end
 
     | compileExp( vtable, Equal(e1, e2, _), place ) =
         let val t1 = "eq1_" ^ newName()
@@ -241,13 +250,26 @@ struct
         end
 
     (* Task 2: Some code-generation of operators should occur here. *)
-(*
     | compileExp( vtable, Or(e1, e2, pos), place ) =
-        raise Error ( "Task 2 not implemented yet in code generator ", pos )
+        let val t1 = "or1_" ^ newName()
+            val c1 = compileExp(vtable, e1, t1)
+            val t2 = "or2_" ^ newName()
+            val c2 = compileExp(vtable, e2, t2)
+            val lA = "_or_" ^ newName()
+        in c1 (* do first part, skip 2nd part if already true *)
+           @ [Mips.MOVE (place, t1), Mips.BEQ (place, "1", lA) ]
+           @ c2 (* when here, t1 was false, so the result is t2 *)
+           @ [Mips.MOVE (place, t2), Mips.LABEL lA ]
+        end
     | compileExp( vtable, Not(e1, pos), place ) =
-        raise Error ( "Task 2 not implemented yet in code generator ", pos )
-*)
-
+        let val t1 = "not1_" ^ newName()
+            val c1 = compileExp(vtable, e1, t1)
+            val t2 = "not2_" ^ newName()
+            val c2 =  compileExp(vtable, Literal(BVal (Log true), pos), t2)
+        in c1
+           @ c2
+           @ [Mips.XOR (place, t1, t2)] (* xor(a, true) = not (a) *)
+        end
     | compileExp( vtab, FunApp (("len",(_,_)),args,pos), place ) =
        ( case args of
            [d, arr]=> let val a_reg = "_tmp_"^newName()
@@ -500,7 +522,7 @@ struct
         (** TASK 5: Extend this to handle the extra needs of procedures.  Procedures
          * must also have code to put variables back into the registers used to call
          * the procedure. **)
-        | ProcCall ((n,_), es, p) => 
+        | ProcCall ((n,_), es, p) =>
           let
               val (mvcode, maxreg) = putArgs es vtable minReg
           in
@@ -563,10 +585,10 @@ struct
                    (offset+4) (* adjust offset *)
 
   (* add function arguments to symbol table *)
-  and getMovePairs     []      vtable   _     = ([], vtable) 
+  and getMovePairs     []      vtable   _     = ([], vtable)
     | getMovePairs (Dec ((v,t),p)::vs) vtable nextReg =
            if nextReg > maxCaller
-             then raise Error ("Too many arguments (max  " ^ 
+             then raise Error ("Too many arguments (max  " ^
                                makestring (maxCaller-minReg) ^ "!", p)
              else
                let val vname = v ^ "_arg_" ^ newName()
