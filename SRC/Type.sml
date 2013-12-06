@@ -267,7 +267,8 @@ struct
             val (tp1, tp2) = (typeOfExp e1_new, typeOfExp e2_new)
         in  if  typesEqual(BType Bool, tp1) andalso typesEqual(BType Bool, tp2)
             then Or(e1_new, e2_new, pos)
-            else raise Error ( "in type check and exp, one argument is not of bool type ", pos )
+            else raise Error("in type check and exp, one argument is not of bool type "^
+                             pp_type tp1^" and "^pp_type tp2^" at ", pos)
         end
     | typeCheckExp ( vtab, AbSyn.Not (e1,    pos), _ ) =
         let val e1_new = typeCheckExp(vtab,e1, UnknownType )
