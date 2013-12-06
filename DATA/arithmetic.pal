@@ -3,6 +3,9 @@ procedure main()
     var i : int;
         j : int;
         k : int;
+        //added for test of times and divison
+        a : int;
+        b : int;
 begin
     i := 1;
     j := 2;
@@ -11,4 +14,8 @@ begin
     i := i + j;
     j := k - 1;
     k := k + 2;
+    //added times and division
+    a := a * a;
+    b := b / b;
+
 end;
