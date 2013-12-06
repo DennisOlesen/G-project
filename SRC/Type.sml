@@ -252,12 +252,14 @@ struct
         in  if  typesEqual(BType Bool, tp1) andalso typesEqual(BType Bool, tp2)
             then Or(e1_new, e2_new, pos)
             else raise Error ( "in type check and exp, one argument is not of bool type ", pos )
+        end
     | typeCheckExp ( vtab, AbSyn.Not (e1,    pos), _ ) =
         let val e1_new = typeCheckExp(vtab,e1, UnknownType )
             val (tp1) = (typeOfExp e1_new)
         in  if typesEqual(BType Bool, tp1) 
-            then Not(e1)
+            then Not(e1_new,    pos)
             else raise Error ( "in type check and exp, argument is not of bool type ", pos )
+        end
     (********************************************************************************)
     (*** SPECIAL CASES of Function Application (read & new USE THE Expected Type) ***)
     (********************************************************************************)
