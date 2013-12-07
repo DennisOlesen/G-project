@@ -170,9 +170,13 @@ struct
 
     | pp_exp (Plus  (e1, e2, _))    = "( " ^ pp_exp e1 ^ " + " ^ pp_exp e2 ^ " )"
     | pp_exp (Minus (e1, e2, _))    = "( " ^ pp_exp e1 ^ " - " ^ pp_exp e2 ^ " )"
+    | pp_exp (Times (e1, e2, _))    = "( " ^ pp_exp e1 ^ " * " ^ pp_exp e2 ^ " )"
+    | pp_exp (Div   (e1, e2, _))    = "( " ^ pp_exp e1 ^ " / " ^ pp_exp e2 ^ " )"
     | pp_exp (Equal (e1, e2, _))    = "( " ^ pp_exp e1 ^ " = " ^ pp_exp e2 ^ " )"
     | pp_exp (Less  (e1, e2, _))    = "( " ^ pp_exp e1 ^ " < " ^ pp_exp e2 ^ " )"
     | pp_exp (And   (e1, e2, _))    = "( " ^ pp_exp e1 ^ " & " ^ pp_exp e2 ^ " )"
+    | pp_exp (Or    (e1, e2, _))    = "( " ^ pp_exp e1 ^ " | " ^ pp_exp e2 ^ " )"
+    | pp_exp (Not   (e, _))         = "( !" ^ pp_exp e ^ " )"
 
     | pp_exp (FunApp ((nm,_), args, _)) = nm ^ "( " ^ pp_exps args ^ " )"
     | pp_exp (Map    ((nm,_), arr , _)) = "map ( " ^ nm ^ ", " ^ pp_exp arr ^ " ) "
@@ -334,9 +338,13 @@ struct
     | typeOfExp ( ArrLit (_,t,_) ) = t
     | typeOfExp ( Plus   (a,b,_) ) = typeOfExp a
     | typeOfExp ( Minus  (a,b,_) ) = typeOfExp a
+    | typeOfExp ( Times  (a,b,_) ) = typeOfExp a
+    | typeOfExp ( Div    (a,b,_) ) = typeOfExp a
     | typeOfExp ( Equal  (_,_,_) ) = BType Bool
     | typeOfExp ( Less   (_,_,_) ) = BType Bool
     | typeOfExp ( And    (_,_,_) ) = BType Bool
+    | typeOfExp ( Or     (_,_,_) ) = BType Bool
+    | typeOfExp ( Not    (_,_) )   = BType Bool
 
     | typeOfExp ( LValue (Var    (_,t)      , _) ) = t
     | typeOfExp ( LValue (Index ((v,t),inds), p) ) =
@@ -367,12 +375,12 @@ struct
                     " lacks return type, at ", p)
 
   (*  typeOfStmt( e : Stmt   ) : Type option *)
-  fun typeOfStmt( Return (SOME e,_) ) = SOME (typeOfExp e)
-    | typeOfStmt( Return (NONE  ,_) ) = NONE
-    | typeOfStmt(ProcCall(_, _,  p) ) = NONE
-    | typeOfStmt( Assign (_, _,  p) ) = NONE
-    | typeOfStmt( While  (_, _,  p) ) = NONE
-    | typeOfStmt(IfThEl(_, _, _, p) ) = NONE
+  fun typeOfStmt( Return   (SOME e,_) ) = SOME (typeOfExp e)
+    | typeOfStmt( Return   (NONE  ,_) ) = NONE
+    | typeOfStmt( ProcCall (_, _,  p) ) = NONE
+    | typeOfStmt( Assign   (_, _,  p) ) = NONE
+    | typeOfStmt( While    (_, _,  p) ) = NONE
+    | typeOfStmt( IfThEl   (_, _, _, p) ) = NONE
 
 (***************************************************)
 (*** Helper Function posOfExp/Stmt/Block/Fun     ***)
@@ -385,9 +393,13 @@ struct
     | posOfExp  ( LValue (_,  p) ) = p
     | posOfExp  ( Plus   (_,_,p) ) = p
     | posOfExp  ( Minus  (_,_,p) ) = p
+    | posOfExp  ( Times  (_,_,p) ) = p
+    | posOfExp  ( Div    (_,_,p) ) = p
     | posOfExp  ( Equal  (_,_,p) ) = p
     | posOfExp  ( Less   (_,_,p) ) = p
     | posOfExp  ( And    (_,_,p) ) = p
+    | posOfExp  ( Or     (_,_,p) ) = p
+    | posOfExp  ( Not    (_,p) )   = p
     | posOfExp  ( FunApp (_,_,p) ) = p
     | posOfExp  ( Map    (_,_,p) ) = p
 

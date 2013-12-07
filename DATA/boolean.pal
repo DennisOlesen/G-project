@@ -3,8 +3,10 @@ procedure main()
     var a : bool;
         b : bool;
         c : bool;
+        d : bool;
 begin
     a := true;
     b := false;
     c := a and b;
+    d := a or b;
 end;

@@ -118,6 +118,16 @@ fun evalAnd (BVal (Log b1), BVal (Log b2), pos) = BVal (Log (b1 andalso b2))
         raise Error( "And: argument types do not match. Arg1: " ^
                       pp_val v1 ^ ", arg2: " ^ pp_val v2, pos )
 
+fun evalOr (BVal (Log b1), BVal (Log b2), pos) = BVal (Log (b1 orelse b2))
+  | evalOr (v1, v2, pos) =
+        raise Error( "Or: argument types do not match. Arg1: " ^
+                      pp_val v1 ^ ", arg2: " ^ pp_val v2, pos)
+
+fun evalNot (BVal (Log b), pos) = BVal (Log (not(b)))
+  | evalNot (v, pos) =
+  raise Error( "Not: argument type is not a boolean. " ^
+                "Arg: " ^ pp_val v, pos)
+
 (***********************************************)
 (*** Getting/Setting an Array Index,         ***)
 (***   with bounds checking                  ***)
@@ -468,12 +478,18 @@ and evalExp ( Literal(lit,_), vtab, ftab ) = lit
         end
 
     (* Task 2: Some evaluation of operators should occur here. *)
-(*
   | evalExp ( Times(e1, e2, pos), vtab, ftab ) =
-        raise Error ( "Task 2 not implemented yet in typed interpreter ", pos )
+        let val res1   = evalExp(e1, vtab, ftab)
+            val res2   = evalExp(e2, vtab, ftab)
+        in
+            evalBinop(op *, res1, res2, pos)
+        end
   | evalExp ( Div(e1, e2, pos), vtab, ftab ) =
-        raise Error ( "Task 2 not implemented yet in typed interpreter ", pos )
-*)
+        let val res1   = evalExp(e1, vtab, ftab)
+            val res2   = evalExp(e2, vtab, ftab)
+        in
+            evalBinop(op Int.div, res1, res2, pos)
+        end
 
   | evalExp ( Equal(e1, e2, pos), vtab, ftab ) =
         let val r1 = evalExp(e1, vtab, ftab)
@@ -490,14 +506,16 @@ and evalExp ( Literal(lit,_), vtab, ftab ) = lit
             val r2 = evalExp(e2, vtab, ftab)
 	in  evalAnd(r1, r2, pos)
 	end
-
     (* Task 2: Some evaluation of operators should occur here. *)
-(*
   | evalExp ( Or(e1, e2, pos), vtab, ftab ) =
-        raise Error ( "Task 2 not implemented yet in typed interpreter ", pos )
-  | evalExp ( Not(e1, pos), vtab, ftab ) =
-        raise Error ( "Task 2 not implemented yet in typed interpreter ", pos )
-*)
+        let val r1 = evalExp(e1, vtab, ftab)
+            val r2 = evalExp(e2, vtab, ftab)
+	in  evalOr(r1, r2, pos)
+	end
+  | evalExp ( Not(e, pos), vtab, ftab ) =
+        let val r = evalExp(e, vtab, ftab)
+	in  evalNot(r, pos)
+	end
 
   (************************************************************************)
   (** application of regular functions, i.e., defined in the program     **)

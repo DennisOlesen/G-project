@@ -203,24 +203,22 @@ struct
             val (tp1, tp2) = (typeOfExp e1_new, typeOfExp e2_new)
         in  if typesEqual(BType Int, tp1) andalso typesEqual(BType Int, tp2)
             then Times(e1_new, e2_new, pos)
-            else
-            raise Error ("in type check times exp, one arguments is not of int type "^
-                         pp_type tp1^" and "^pp_type tp2^" at ", pos )
+            else raise Error ("in type check times exp, one arguments is not of int type "^
+                              pp_type tp1^" and "^pp_type tp2^" at ", pos )
         end
-    | typeCheckExp ( vtab, AbSyn.Div   (e1, e2, pos), _ ) =
+    | typeCheckExp ( vtab, AbSyn.Div (e1, e2, pos), _ ) =
         let val e1_new = typeCheckExp(vtab, e1, UnknownType )
             val e2_new = typeCheckExp(vtab, e2, UnknownType )
             val (tp1, tp2) = (typeOfExp e1_new, typeOfExp e2_new)
         in  if typesEqual(BType Int, tp1) andalso typesEqual(BType Int, tp2)
             then Div(e1_new, e2_new, pos)
-            else 
-            raise Error ( "in type check div exp, one arguments is not of int type "^
-                         pp_type tp1^" and "^pp_type tp2^" at ", pos )
-        end 
+            else raise Error ( "in type check div exp, one arguments is not of int type "^
+                               pp_type tp1^" and "^pp_type tp2^" at ", pos )
+        end
 
       (* Must be modified to complete task 3 *)
     | typeCheckExp ( vtab, AbSyn.Equal(e1, e2, pos), _ ) =
-       let val e1_new = typeCheckExp(vtab, e1, UnknownType)
+        let val e1_new = typeCheckExp(vtab, e1, UnknownType)
             val e2_new = typeCheckExp(vtab, e2, UnknownType )
             val (tp1, tp2) = (typeOfExp e1_new, typeOfExp e2_new)
             (* check that tp1 is not an array type *)
@@ -228,7 +226,7 @@ struct
                        Array _ => raise Error("in type check equal, first expression "^pp_exp e1_new^
                                               "is an array (of type) "^pp_type tp1^" at ", pos)
                      | _ => ()
-        in  if  typesEqual(tp1, tp2)
+        in  if typesEqual(tp1, tp2)
             then Equal(e1_new, e2_new, pos)
             else raise Error("in type check equal exp, argument types do not match "^
                              pp_type tp1^" <> "^pp_type tp2^" at ", pos)
